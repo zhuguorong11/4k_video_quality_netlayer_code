@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>网络层信息</title>
+    <script language="JavaScript" src="/static_file/jquery-3.1.1.js" charset="utf-8"></script>
+    <!--<script src="https://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static_file/echarts-all.js"></script>-->
+    <script src="https://cdn.bootcss.com/echarts/3.2.0/echarts.js"></script>
+    <script type="text/javascript" src="/static_file/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static_file/mystyle.css">
+    <link rel="stylesheet" type="text/css" href="/static_file/bootstrap.css">
+
+
+</head>
+<body align="center" onload="ipDefalut()">
+    <div>
+        <select id="s0" style="position: absolute; left:1630px;top: 20px;" onchange="ipChange()">
+            <!--<option value="- please select clinet ip-" selected = "selected"> - please select clinet ip -</option>-->
+            <option value="192.168.1.2" selected = "selected">192.168.1.2</option>
+            <option value="192.168.1.3">192.168.1.3</option>
+            <option value="192.168.1.4">192.168.1.4</option>
+            <option value="192.168.1.5">192.168.1.5</option>
+            <option value="192.168.1.6">192.168.1.6</option>
+            <option value="192.168.1.7">192.168.1.7</option>
+            <option value="192.168.1.8">192.168.1.8</option>
+            <option value="10.141.251.47">10.141.251.47</option>
+        </select>
+        <div class="input-group" style="position: absolute; left:1630px;top: 60px;">
+            <span class="input-group-addon">client IP</span>
+            <input id="ipInput" type="text" class="form-control" placeholder="192.168.1.1">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" id="btndisplay" style="position: absolute; left:10px;top: 50px;">监测界面显示</button><br>
+            <button class="btn btn-primary" id="btn1" style="position: absolute; left:10px;top: 100px;">监测流媒体信息</button><br>
+            <button class="btn btn-primary" id="btn2" style="position: absolute; left:10px;top: 150px;">监测带宽、延时、抖动</button><br>
+            <button class="btn btn-primary" id="btn4" style="position: absolute; left:10px;top: 200px;">监测重传乱序</button><br>
+            <button class="btn btn-warning" id="btn5" style="position: absolute; left:10px;top: 250px;"><span class="glyphicon glyphicon-asterisk"></span>导出所有数据</button>
+            <div style="position: absolute; left:10px;top: 300px;">
+                <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                    大数据平台
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" style="background-color:#D9534F;">
+                    <li><a id="btn6"><span class="glyphicon glyphicon-asterisk"></span>上传至大数据平台</a></li>
+                    <li><a id="btn7"><span class="glyphicon glyphicon-asterisk"></span>清空大数据文件</a></li>
+                    <!--<li><a id="btn7"><span class="glyphicon glyphicon-asterisk"></span>分析业务展示</a></li>-->
+                </ul>
+            </div>
+        </div>
+
+        <span id="offLineInfo" style="position: absolute; left:10px;top: 440px;font-size:15px;color:red;"></span>
+        <!--modal-->
+        <button type="button" id="infoDisplayOnline" class="btn btn-warning" data-toggle="modal" data-target="#myModalinfo" style="position: absolute; left:10px;top: 350px;">在线业务展示</button>
+        <button type="button" id="infoDisplayOffline" class="btn btn-warning" data-toggle="modal" data-target="#myModalinfo" style="position: absolute; left:10px;top: 400px;">离线业务展示</button>
+                    <!-- 模态框（Modal） -->
+
+        <div class="modal fade" id="myModalinfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width:1100px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <div>
+                            <h4 class="modal-title" id="myModalLabel"></h4>
+                            <span id="clientAdd" style="position:absolute;left:440px;top:15px;font-size:20px;"></span>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="bandwidth" style="width:1000px;height:300px"></div>
+                        <hr>
+                        <div id="delay" style="width:1000px;height:300px"></div>
+                        <hr>
+                        <div id="jetter" style="width:1000px;height:300px"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+        <!--modal end-->
+
+    </div>
+    <!--<button class="btn btn-primary" data-toggle="modal" data-target="#myModalinfo" style="position: absolute; left:10px;top: 350px;">开始演示模态框</button>-->
+
+
+
+
+    <!--流媒体信息-->
+    <div id="info1" style="width: 1000px; position: absolute; left: 250px;top:20px;">
+        <div class="table-head">
+            <table>
+                <colgroup>
+                    <col style="width: 200px;" />
+                    <col style="width: 200px;"/>
+                    <col style="width: 180px;"/>
+                    <col style="width: 80px;"/>
+                    <col style="width: 100px;"/>
+                    <col style="width: 80px;"/>
+                </colgroup>
+                <thead>
+                <tr><th>流媒体</th><th>视频URL</th><th>时间</th><th>HTTP码</th><th>TCP建立时间(ms)</th><th>用户IP</th></tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table>
+                <colgroup>
+                    <col style="width: 200px;" />
+                    <col style="width: 200px;"/>
+                    <col style="width: 180px;"/>
+                    <col style="width: 80px;"/>
+                    <col style="width: 100px;"/>
+                    <col style="width: 80px;"/>
+                </colgroup>
+                <tbody id="info1mes">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--分辨率 帧率 psnr显示-->
+    <div id="videoInfo" style="display:none;width: 300px; position: absolute; left: 1300px;top:20px;">
+        <div class="table-head">
+            <table>
+                <colgroup>
+                    <col style="width: 300px;" />
+                </colgroup>
+                <thead>
+                <tr><th>视频信息情况&nbsp;&nbsp;&nbsp;&nbsp;<button id="videoInfoShow">监测开始</button></th></tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body" >
+            <table>
+                <colgroup>
+                    <col style="width: 300px;" />
+                </colgroup>
+                <tbody id="concreteInfo">
+                    <tr><td>文件名</td><td id="filename">videoInfoShow</td></tr>
+                    <tr><td>视频分辨率(w*h)</td><td id="resolution">videoInfoShow</td></tr>
+                    <tr><td>帧率(帧/s)</td><td id="framerate">videoInfoShow</td></tr>
+                    <tr><td>PSNR值</td><td id="psnr">videoInfoShow</td></tr>
+                    <tr><td>视频质量</td><td id="videoquality">videoInfoShow</td></tr>
+                    <tr><td>用户IP</td><td id="videoInfoIP">videoInfoShow</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--抖动 延时 带宽-->
+    <div id="info2" style="width: 550px;height:300px; position: absolute; left: 150px;top: 440px;">
+        <div class="table-head">
+            <table>
+                <colgroup>
+                    <col style="width: 70px;" />
+                    <col style="width: 70px;"/>
+                    <col style="width: 70px;"/>
+                    <col style="width: 120px;"/>
+                    <col style="width: 100px;"/>
+                </colgroup>
+                <thead>
+                <tr><th>带宽(MB/s)</th><th>延时(ms)</th><th>抖动(ms)</th><th>时间</th><th>clinet IP</th></tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body" style="height:300px;">
+            <table>
+                <colgroup class="bandwidth">
+                    <col style="width: 70px;" />
+                    <col style="width: 70px;"/>
+                    <col style="width: 70px;"/>
+                    <col style="width: 120px;"/>
+                    <col style="width: 100px;"/>
+                </colgroup>
+                <tbody id="info2mes">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <span id="uploadhdfs" style="position:absolute;left:840px;top:330px;display:none;z-index:999"><img src="/static_file/loader.gif" style="width:100px"></span>
+    <span id="ipinfo" style="display:none;width: 1000px;height:400px;position:absolute;left: 1150px;top: 410px;font-size:20px;"></span>
+    <div id="info3" style="width: 1000px;height:400px;position:absolute;left: 750px;top: 440px;"></div>
+<!--<button class="btn btn-primary" id="calReTran" style="position: absolute; left: 750px;top: 440px; display:none;">重传乱序计算</button>-->
+
+    <footer class="footer">
+        <span class="footinfo1">复旦大学 版权所有</span><br />
+        <span class="footinfo2">网址:<a href="http://www.fudan.edu.cn">www.fudan.edu.cn</a></span>
+    </footer>
+
+    <script src="/static_file/QoSinfo.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static_file/infoDisplay.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

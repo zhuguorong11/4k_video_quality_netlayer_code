@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <div id="dict">Ajax 加载字典</div>
+<p id="dict_result"></p>
+
+<div id="list">Ajax 加载列表</div>
+<p id="list_result"></p>
+
+
+<script language="JavaScript" src="/static_file/jquery-3.1.1.js" charset="utf-8"></script>
+<script>
+    $(document).ready(function(){
+      // 列表 list
+      $('#list').click(function(){
+          $.getJSON('/ajax_list/',function(ret){
+            //返回值 ret 在这里是一个列表
+            for (var i = ret.length - 1; i >= 0; i--) {
+              // 把 ret 的每一项显示在网页上
+              $('#list_result').append(' ' + ret[i])
+            };
+          })
+      })
+
+      // 字典 dict
+      $('#dict').click(function(){
+          $.getJSON('/ajax_dict/',function(ret){
+              //返回值 ret 在这里是一个字典
+              $('#dict_result').append(ret.twz + '<br>');
+              $('#dict_result').append(ret.zqxt + '<br>');
+              // 也可以用 ret['twz']
+          })
+      })
+    });
+</script>
+</body>
+</html>
